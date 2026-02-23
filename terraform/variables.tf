@@ -31,5 +31,5 @@ variable "mongodb_uri" {
 variable "solution_stack" {
   description = "Elastic Beanstalk solution stack for Docker"
   type        = string
-  default     = "64bit Amazon Linux 2023 v4.3.5 running Docker"
+  default     = "64bit Amazon Linux 2023 v4.9.3 running Docker"
 }
