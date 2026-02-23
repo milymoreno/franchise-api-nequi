@@ -125,3 +125,54 @@ HTTP Request
 ```
 
 El dominio no depende de Spring, MongoDB ni ningún framework.
+
+---
+
+## Despliegue en AWS con Terraform
+
+### Requisitos
+
+- [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.5
+- AWS CLI configurado (`aws configure`)
+- Cuenta en [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) con un cluster creado
+
+### 1. Configurar variables
+
+```bash
+cd terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edita terraform.tfvars con tu MONGODB_URI de Atlas
+```
+
+### 2. Construir el jar y la imagen Docker
+
+```bash
+./mvnw package -DskipTests
+./mvnw spring-boot:build-image -DskipTests
+```
+
+### 3. Subir imagen a ECR (opcional) o usar Dockerrun.aws.json
+
+El Elastic Beanstalk usara el `Dockerfile` incluido en el zip de despliegue.
+
+### 4. Inicializar y aplicar Terraform
+
+```bash
+cd terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+Al finalizar, Terraform imprime la URL publica de la app:
+
+```
+Outputs:
+app_url = "http://franchise-api-production.us-east-1.elasticbeanstalk.com"
+```
+
+### 5. Destruir infraestructura
+
+```bash
+terraform destroy
+```

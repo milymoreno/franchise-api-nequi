@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in the values
+# DO NOT commit terraform.tfvars to git
+
+aws_region  = "us-east-1"
+app_name    = "franchise-api"
+environment = "production"
+mongodb_uri = "mongodb+srv://USER:PASSWORD@CLUSTER.mongodb.net/franchise-db"
