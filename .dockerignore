@@ -1,0 +1,4 @@
+.mvn/
+*.md
+.git/
+src/
