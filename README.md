@@ -177,28 +177,20 @@ Al finalizar, Terraform imprimirá el nombre del entorno y el bucket S3 creado.
 
 ### 3. Empaquetar y Desplegar la Aplicación
 
-Construye el JAR y crea el archivo `.zip` de despliegue incluyendo el `Dockerfile.eb` (preparado para Java 21 en la nube):
+La infraestructura de Terraform está configurada para empaquetar automáticamente el código y desplegarlo en AWS Elastic Beanstalk cada vez que haya cambios en el JAR o el Dockerfile.
+
+Solo debes compilar el JAR y aplicar Terraform nuevamente:
 
 ```bash
-# Compilar JAR
+# 1. Compilar JAR
 ./mvnw package -DskipTests
 
-# Crear ZIP (requiere zip instalado)
-cp Dockerfile.eb Dockerfile.tmp
-zip -j deploy.zip Dockerfile.tmp target/franchise-api-0.0.1-SNAPSHOT.jar
-
-# Desplegar usando AWS CLI
-aws s3 cp deploy.zip s3://<tu-bucket-s3-creado-por-terraform>/deploy.zip
-
-aws elasticbeanstalk create-application-version \
-  --application-name franchise-api \
-  --version-label v1 \
-  --source-bundle S3Bucket=<tu-bucket-s3-creado-por-terraform>,S3Key=deploy.zip
-
-aws elasticbeanstalk update-environment \
-  --environment-name franchise-api-production \
-  --version-label v1
+# 2. Desplegar usando Terraform
+cd terraform
+terraform apply -auto-approve
 ```
+
+> **Nota:** Terraform tomará automáticamente el archivo `Dockerfile.eb`, lo renombrará a `Dockerfile`, lo empaquetará junto al JAR y actualizará el entorno.
 
 La app estará disponible en la URL generada por Elastic Beanstalk (ej. `http://franchise-api-production...elasticbeanstalk.com/swagger-ui.html`).
 

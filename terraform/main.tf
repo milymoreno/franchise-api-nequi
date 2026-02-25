@@ -62,11 +62,41 @@ resource "aws_elastic_beanstalk_application" "app" {
   description = "Franchise API - Prueba Tecnica NEQUI"
 }
 
+# --- Empaquetado de la Aplicación (ZIP) ---
+data "archive_file" "deploy_zip" {
+  type        = "zip"
+  output_path = "${path.module}/../deploy.zip"
+
+  source {
+    content  = file("${path.module}/../Dockerfile.eb")
+    filename = "Dockerfile"
+  }
+
+  source {
+    content  = file("${path.module}/../target/franchise-api-0.0.1-SNAPSHOT.jar")
+    filename = "franchise-api-0.0.1-SNAPSHOT.jar"
+  }
+}
+
+resource "aws_s3_object" "app_version" {
+  bucket = aws_s3_bucket.eb_bucket.id
+  key    = "deploy-${data.archive_file.deploy_zip.output_md5}.zip"
+  source = data.archive_file.deploy_zip.output_path
+}
+
+resource "aws_elastic_beanstalk_application_version" "app_version" {
+  name        = "${var.app_name}-${data.archive_file.deploy_zip.output_md5}"
+  application = aws_elastic_beanstalk_application.app.name
+  bucket      = aws_s3_bucket.eb_bucket.id
+  key         = aws_s3_object.app_version.id
+}
+
 # --- Elastic Beanstalk Environment ---
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "${var.app_name}-${var.environment}"
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = var.solution_stack
+  version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"

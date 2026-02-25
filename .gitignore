@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Elastic Beanstalk Deployment ###
+deploy*.zip
+Dockerfile.tmp
+Dockerfile
