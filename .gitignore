@@ -36,3 +36,4 @@ build/
 deploy*.zip
 Dockerfile.tmp
 Dockerfile
+.env
