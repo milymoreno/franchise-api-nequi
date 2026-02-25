@@ -13,3 +13,11 @@ springdoc:
 
 server:
   port: 8080
+
+app:
+  security:
+    admin:
+      username: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:admin123}
+    jwt:
+      secret: ${JWT_SECRET:nequi-franchise-api-super-secret-key-2024}
