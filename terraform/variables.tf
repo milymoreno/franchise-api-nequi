@@ -33,3 +33,21 @@ variable "solution_stack" {
   type        = string
   default     = "64bit Amazon Linux 2023 v4.9.3 running Docker"
 }
+
+variable "jwt_secret" {
+  description = "JWT Secret for application security"
+  type        = string
+  sensitive   = true
+}
+
+variable "admin_username" {
+  description = "Admin username for the API"
+  type        = string
+  sensitive   = true
+}
+
+variable "admin_password" {
+  description = "Admin password for the API"
+  type        = string
+  sensitive   = true
+}
